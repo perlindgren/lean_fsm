@@ -7,6 +7,7 @@ inductive S where
 | s1 : S
 | s2 : S
 | s3 : S
+deriving Repr
 
 open S -- make the variants s0, ... available
 
@@ -22,36 +23,64 @@ match s, ta, tb with
 #reduce (next .s0 false false)
 #reduce (next .s0 false true)
 
-def e (s:S) : BitVec 2 :=
+def es (s:S) : BitVec 2 :=
 match s with
 | s0 => 0b00
 | s1 => 0b01
 | s2 => 0b10
 | s3 => 0b11
 
-#eval (e s2)
+#eval (es s2)
 
-def d (s:BitVec 2) : S :=
+def ds (s:BitVec 2) : S :=
 match s with
 | 0b00 => s0
 | 0b01 => s1
 | 0b10 => s2
 | 0b11 => s3
 
-#eval (d 10)
+#eval (ds 10)
 
-theorem de : ∀ s, d (e s) = s :=
+theorem de : ∀ s, ds (es s) = s :=
   by
     intro
     rename_i s
     cases s
-    . simp [e, d]
-    . simp [e, d]
-    . simp [e, d]
-    . simp [e, d]
+    . simp [es, ds]
+    . simp [es, ds]
+    . simp [es, ds]
+    . simp [es, ds]
 
-theorem de_alt : ∀ s, d (e s) = s :=
+theorem de_alt : ∀ s, ds (es s) = s :=
   by
     intro
     rename_i s
-    cases s  <;> simp [e, d]
+    cases s  <;> simp [es, ds]
+
+inductive O where
+| green  : O
+| yellow : O
+| red    : O
+deriving Repr
+
+open O
+def eo (o:O) : BitVec 2 :=
+match o with
+| green  => 0b00
+| yellow => 0b01
+| red    => 0b10
+
+def out (s: S): O × O :=
+match s with
+| s0 => (green , red)
+| s1 => (yellow, red)
+| s2 => (red   , green)
+| s3 => (red   , yellow)
+
+#eval (out s0)
+#eval (
+  let (a, b) := out s0
+  let a_bv := eo a
+  let b_bv := eo b
+  (a_bv[1], a_bv[0], b_bv[1], b_bv[0])
+  )
