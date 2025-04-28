@@ -20,26 +20,33 @@ match s, ta, tb with
 | s2, _    , true  => s2
 | s3, _    , _     => s0
 
-#reduce (next .s0 false false)
-#reduce (next .s0 false true)
+#reduce (next s0 false false)
+#reduce (next s0 false true)
+
+theorem s0_sure : ∀ tb, next s0 false tb = s1:=
+  by
+    simp [next]
+
+
 
 def es (s:S) : BitVec 2 :=
 match s with
 | s0 => 0b00
 | s1 => 0b01
-| s2 => 0b10
-| s3 => 0b11
+| s2 => 0b11
+| s3 => 0b10
 
-#eval (es s2)
+#eval ((es s1)[1])
+#eval ((es s1)[0])
 
 def ds (s:BitVec 2) : S :=
 match s with
 | 0b00 => s0
 | 0b01 => s1
-| 0b10 => s2
-| 0b11 => s3
+| 0b11 => s2
+| 0b10 => s3
 
-#eval (ds 10)
+#eval (ds 0b10)
 
 theorem de : ∀ s, ds (es s) = s :=
   by
