@@ -91,6 +91,7 @@ match s with
   (a_bv[1], a_bv[0], b_bv[1], b_bv[0])
   )
 
+-- proof of simple safety argument
 theorem safety : ∀ s,
   match out s with
   | (green, green) => false
@@ -99,6 +100,7 @@ theorem safety : ∀ s,
     intro s
     cases s <;> simp [out]
 
+-- transitive behavior under sequence of inputs
 def trans (s: S) (i: List (Bool × Bool)) : S :=
   match i with
   | [] => s
