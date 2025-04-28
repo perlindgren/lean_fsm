@@ -1,0 +1,8 @@
+name = "lean_fsm"
+version = "0.1.0"
+defaultTargets = ["LeanFsm"]
+
+[[lean_lib]]
+name = "LeanFsm"
+
+
